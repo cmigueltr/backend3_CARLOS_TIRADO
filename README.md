@@ -1,75 +1,50 @@
-## Proyecto Backend III - Entrega Final
+# Backend III — API de adopciones
 
-Este proyecto corresponde a la entrega final del curso, donde se implementa una API de adopciones con documentación Swagger, tests funcionales y Dockerización.
+Express + MongoDB. Incluye rutas de usuarios, mascotas, adopciones, sesiones y mocks.
 
-### Endpoints principales
+## Cómo levantar el proyecto
 
-- **Usuarios**: `GET /api/users`, `GET /api/users/:uid`, `PUT /api/users/:uid`, `DELETE /api/users/:uid`
-- **Mascotas**: `GET /api/pets`, etc.
-- **Adopciones**: `GET /api/adoptions`, `GET /api/adoptions/:aid`, `POST /api/adoptions/:uid/:pid`
+```bash
+npm install
+npm start
+```
 
-### Documentación Swagger (módulo Users)
+Por defecto escucha en el puerto `8080`. La URL de Mongo se configura con la variable `MONGO_URL` (si no, usa la local del código).
 
-La documentación de Swagger para el módulo de `users` está disponible en:
+## Swagger
 
-- **URL local**: `http://localhost:8080/api/docs`
+La documentación del módulo de usuarios está en archivos YAML (`docs/swagger/`), no en comentarios dentro del router. La UI queda en:
 
-Ahí podrás ver documentadas las rutas del router `users.router.js`.
+`http://localhost:8080/api/docs`
 
-### Tests funcionales (adoption.router.js)
+Archivos: `openapi-root.yaml` (info y esquemas) y `paths/users.yaml` (rutas).
 
-Los tests funcionales se encuentran en `test/supertest.test.js` y cubren los endpoints del router `adoption.router.js`.
-
-- **Ejecutar tests**:
+## Tests
 
 ```bash
 npm test
 ```
 
-Puedes configurar IDs reales para usuario, mascota, etc. mediante variables de entorno:
+Hay pruebas sobre `/api/adoptions` y otra que comprueba que `/api/docs` devuelve HTML. Si en tu Mongo no hay usuarios o mascotas, algunos casos se saltan hasta que haya datos o configures las variables `TEST_*` que están en el código.
 
-- **Variables usadas en los tests**:
-  - `TEST_USER_ID`
-  - `TEST_PET_ID`
-  - `TEST_ADOPTED_PET_ID`
-  - `TEST_NON_EXISTING_USER_ID`
-  - `TEST_NON_EXISTING_PET_ID`
+## Docker
 
-Si no se definen, se utilizarán IDs por defecto.
+Imagen en Docker Hub: **cmigueltr/backendiii-adopciones**
 
-### Dockerfile e imagen de Docker
+- Página del repo: https://hub.docker.com/r/cmigueltr/backendiii-adopciones
 
-Se ha creado un `Dockerfile` en la raíz del proyecto que permite construir una imagen Docker de la aplicación.
-
-- **Construir la imagen**:
+Para generar la imagen localmente y subirla (desde la raíz del proyecto, con Docker Desktop abierto):
 
 ```bash
-docker build -t TU_USUARIO_DOCKERHUB/backendiii-adopciones .
+docker build -t cmigueltr/backendiii-adopciones:latest .
+docker login
+docker push cmigueltr/backendiii-adopciones:latest
 ```
 
-- **Ejecutar el contenedor**:
+Para correr un contenedor apuntando a Mongo en tu máquina (Windows):
 
 ```bash
-docker run -p 8080:8080 -e MONGO_URL="TU_URL_DE_MONGO" TU_USUARIO_DOCKERHUB/backendiii-adopciones
+docker run -p 8080:8080 -e MONGO_URL="mongodb://host.docker.internal:27017/backendiii_adoptions" cmigueltr/backendiii-adopciones:latest
 ```
 
-### Imagen en Docker Hub
-
-Sube la imagen a Docker Hub con:
-
-```bash
-docker push TU_USUARIO_DOCKERHUB/backendiii-adopciones
-```
-
-- **Enlace público a la imagen en Docker Hub**  
-  Sustituye por tu enlace real:
-
-`https://hub.docker.com/r/TU_USUARIO_DOCKERHUB/backendiii-adopciones`
-
-### Resumen para la corrección
-
-- **Swagger**: módulo `Users` documentado en `/api/docs`.
-- **Tests funcionales**: definidos para todos los endpoints de `adoption.router.js` en `test/supertest.test.js`.
-- **Dockerfile**: presente en la raíz del proyecto y listo para construir la imagen.
-- **README**: este archivo incluye el enlace (a completar) a Docker Hub y las instrucciones para construir la imagen, ejecutar el contenedor y usar el proyecto.
-
+Ajustá `MONGO_URL` si tu base está en otro servidor o con otro nombre de base de datos.

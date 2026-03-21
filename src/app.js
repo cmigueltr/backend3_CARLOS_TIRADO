@@ -1,7 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 import usersRouter from './routes/users.router.js';
@@ -9,6 +8,7 @@ import petsRouter from './routes/pets.router.js';
 import adoptionsRouter from './routes/adoption.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import mocksRouter from './routes/mocks.router.js';
+import { loadOpenApiSpec } from './utils/loadOpenApiSpec.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -26,26 +26,9 @@ if (process.env.DISABLE_DB !== 'true') {
 app.use(express.json());
 app.use(cookieParser());
 
-// Configuración básica de Swagger para el módulo de Users
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'API de Adopciones - Users',
-      version: '1.0.0',
-      description: 'Documentación del módulo de usuarios',
-    },
-    servers: [
-      {
-        url: 'http://localhost:' + PORT,
-      },
-    ],
-  },
-  apis: ['./src/routes/users.router.js'],
-};
-
-const swaggerSpecs = swaggerJsdoc(swaggerOptions);
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+// Swagger UI: especificación 100% en YAML (docs/swagger), no en comentarios del router
+const openApiSpec = loadOpenApiSpec(PORT);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
 app.use('/api/users', usersRouter);
 app.use('/api/pets', petsRouter);

@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: API de Adopciones - Módulo Users
+  version: 1.0.0
+  description: |
+    Documentación OpenAPI del recurso **usuarios** (`/api/users`).
+    Los paths detallados se definen en archivos YAML separados bajo `docs/swagger/paths/`.
+servers:
+  - url: http://localhost:8080
+    description: Servidor local (la app ajusta el puerto según `PORT`)
+tags:
+  - name: Users
+    description: Operaciones sobre usuarios
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Identificador MongoDB
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          example: user
+        pets:
+          type: array
+          items:
+            type: object
+    UserUpdateBody:
+      type: object
+      description: Campos a actualizar (parcial)
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+    SuccessList:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    SuccessOne:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: '#/components/schemas/User'
+    SuccessMessage:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        error:
+          type: string

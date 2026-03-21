@@ -1,0 +1,100 @@
+# Paths del módulo Users (montados bajo /api/users en Express)
+/api/users:
+  get:
+    tags: [Users]
+    summary: Listar todos los usuarios
+    operationId: getAllUsers
+    responses:
+      '200':
+        description: Lista obtenida correctamente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuccessList'
+            example:
+              status: success
+              payload: []
+
+/api/users/{uid}:
+  get:
+    tags: [Users]
+    summary: Obtener un usuario por ID
+    operationId: getUserById
+    parameters:
+      - name: uid
+        in: path
+        required: true
+        description: ID del usuario (24 caracteres hex)
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Usuario encontrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuccessOne'
+      '404':
+        description: Usuario no encontrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            example:
+              status: error
+              error: User not found
+  put:
+    tags: [Users]
+    summary: Actualizar un usuario
+    operationId: updateUser
+    parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserUpdateBody'
+          example:
+            first_name: Juan
+            last_name: Pérez
+    responses:
+      '200':
+        description: Usuario actualizado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuccessMessage'
+            example:
+              status: success
+              message: User updated
+      '404':
+        description: Usuario no encontrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+  delete:
+    tags: [Users]
+    summary: Eliminar un usuario
+    operationId: deleteUser
+    parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Operación completada (ver implementación del controlador)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuccessMessage'
+            example:
+              status: success
+              message: User deleted
